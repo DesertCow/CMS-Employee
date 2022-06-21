@@ -16,12 +16,27 @@ const path = require('path')
 
 require('dotenv').config({ path: path.resolve(__dirname + '/config/config.env') })
 
-console.log("Enviroment File Loaded:" + path.resolve(__dirname + '/config/config.env'))
+console.log("\x1b[45mEnviroment File:\x1b[0m" + path.resolve(__dirname + '/config/config.env'))
+
+
+
+//!===================== Connect to DB =====================
+//console.log(process.env.dbNAME + "||" + process.env.PASSWORD + "||" + process.env.HOST + "||" + process.env.HOSTPORT + "||" + process.env.DB_USER);
+
+const db = mysql.createConnection(
+  {
+    host: process.env.HOST,
+    port: process.env.HOSTPORT,
+    user: process.env.DB_USER,
+    password: process.env.PASSWORD,
+    database: process.env.dbNAME
+  },
+  console.log(`Connected to the \x1b[43m${process.env.dbNAME}\x1b[0m database at \x1b[42m${process.env.HOST}:${process.env.HOSTPORT}\x1b[0m`)
+);
+
 
 
 //!===================== Variable Decleration =====================
-
-
 
 
 
@@ -71,7 +86,7 @@ async function mainMenu() {
         case 'Exit':
           console.log(`\x1b[45m==================== Exit! ====================\x1b[0m`);
           console.log(`\x1b[45m=================== Goodbye! ==================\x1b[0m`);
-          return;
+          process.exit(1);
           break;
       }
 
@@ -84,29 +99,75 @@ async function mainMenu() {
 
 // ?============= viewDepartments =============
 function viewDepartments() {
-  console.log("viewDepartments");
 
 
+  db.query('SELECT * FROM department', function (err, results) {
+    console.log("\n\n\x1b[44m ====== Departments ======\x1b[0m");
+    console.table(results);
+  });
 
   mainMenu();
 };
 
 // ?============= viewRoles =============
 function viewRoles() {
-  console.log("viewRoles");
+
+  db.query('SELECT * FROM role', function (err, results) {
+    console.log("\n\n\x1b[44m ================== Roles ==================\x1b[0m");
+    console.table(results);
+  });
 
   mainMenu();
 };
 
 // ?============= viewEmployees =============
 function viewEmployees() {
-  console.log("viewEmployees");
+
+  db.query('SELECT * FROM employee', function (err, results) {
+    console.log("\n\n\x1b[44m ====== Employees ======\x1b[0m");
+    console.table(results);
+  });
 
   mainMenu();
 };
 
 // ?============= addDepartment =============
-function addDepartment() {
+async function addDepartment() {
+
+  inquirer
+    .prompt([
+      {
+        type: 'input',
+        name: 'newDepartment',
+        message: "Please input the new department name",
+      },
+    ])
+    .then(answers => {
+
+      let newDepartmentName = answers.newDepartment;
+
+      inquirer
+        .prompt([
+          {
+            type: 'input',
+            name: 'newID',
+            message: "Please input the new department ID",
+          },
+        ])
+        .then(answers => {
+          console.log("\n\nCall API to create new department with the name " + newDepartmentName);
+
+          db.query(`INSERT INTO department (id, name)VALUES ("${answers.ID}", "${newDepartmentName}"),`, function (err, results) {
+
+            console.log("\n\n\x1b[44m ====== Employees ======\x1b[0m");
+            console.table(results);
+            mainMenu();
+          });
+        });
+    })
+
+
+
   console.log("addDepartment");
 
   mainMenu();
@@ -114,6 +175,20 @@ function addDepartment() {
 
 // ?============= addRole =============
 function addRole() {
+
+  inquirer
+    .prompt([
+      {
+        type: 'input',
+        name: 'newRole',
+        message: "Please input the new role name",
+      },
+    ])
+    .then(answers => {
+
+      console.log("\n\nCall API to create new role with the name " + answers.newRole);
+
+    })
   console.log("addRole");
 
   mainMenu();
@@ -122,6 +197,21 @@ function addRole() {
 
 // ?============= addEmployee =============
 function addEmployee() {
+
+  inquirer
+    .prompt([
+      {
+        type: 'input',
+        name: 'newEmployee',
+        message: "Please input the new Employee name",
+      },
+    ])
+    .then(answers => {
+
+      console.log("\n\nCall API to create new Employee with the name " + answers.newEmployee);
+
+    })
+
   console.log("addEmployee");
 
   mainMenu();
@@ -140,19 +230,6 @@ function updateEmployeeRole() {
 // ?============= Init =============
 
 function init() {
-
-  //console.log(process.env.dbNAME + "||" + process.env.PASSWORD + "||" + process.env.HOST + "||" + process.env.HOSTPORT + "||" + process.env.DB_USER);
-
-  const db = mysql.createConnection(
-    {
-      host: process.env.HOST,
-      port: process.env.HOSTPORT,
-      user: process.env.DB_USER,
-      password: process.env.PASSWORD,
-      database: process.env.dbNAME
-    },
-    console.log(`Connected to the \x1b[43m${process.env.dbNAME}\x1b[0m database via \x1b[42m${process.env.HOST}:${process.env.HOSTPORT}\x1b[0m`)
-  );
 
 }
 
