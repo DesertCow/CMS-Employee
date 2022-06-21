@@ -12,6 +12,12 @@ const express = require('express');
 const mysql = require('mysql2');
 const cTable = require('console.table');
 
+const path = require('path')
+
+require('dotenv').config({ path: path.resolve(__dirname + '/config/config.env') })
+
+console.log("Enviroment File Loaded:" + path.resolve(__dirname + '/config/config.env'))
+
 
 //!===================== Variable Decleration =====================
 
@@ -80,6 +86,8 @@ async function mainMenu() {
 function viewDepartments() {
   console.log("viewDepartments");
 
+
+
   mainMenu();
 };
 
@@ -132,6 +140,19 @@ function updateEmployeeRole() {
 // ?============= Init =============
 
 function init() {
+
+  //console.log(process.env.dbNAME + "||" + process.env.PASSWORD + "||" + process.env.HOST + "||" + process.env.HOSTPORT + "||" + process.env.DB_USER);
+
+  const db = mysql.createConnection(
+    {
+      host: process.env.HOST,
+      port: process.env.HOSTPORT,
+      user: process.env.DB_USER,
+      password: process.env.PASSWORD,
+      database: process.env.dbNAME
+    },
+    console.log(`Connected to the \x1b[43m${process.env.dbNAME}\x1b[0m database via \x1b[42m${process.env.HOST}:${process.env.HOSTPORT}\x1b[0m`)
+  );
 
 }
 
