@@ -59,8 +59,37 @@ function DBTest() {
 
 };
 
+function getAllDepartments() {
+  db.query('SELECT * FROM department', function (err, results) {
+    console.log("====== All Departments =======");
+    console.log(results);
+  });
+}
+
+function getAllRoles() {
+  db.query('SELECT * FROM role', function (err, results) {
+    console.log("======== All Roles =========");
+    console.log(results);
+  });
+}
+
+
+function getAllEmployees() {
+  db.query('SELECT * FROM employee', function (err, results) {
+    console.log("====== All Employees =======");
+    console.log(results);
+  });
+}
+
+
+function init() {
+
+
+}
+
 
 //! ================= Main  =================
+
 
 app.use((req, res) => {
   res.status(404).end();
@@ -70,5 +99,8 @@ app.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`);
 });
 
+getAllDepartments();
+getAllRoles();
+getAllEmployees();
 
 //! ================= EOF  =================
