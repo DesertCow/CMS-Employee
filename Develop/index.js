@@ -12,10 +12,31 @@ const express = require('express');
 const mysql = require('mysql2');
 const cTable = require('console.table');
 
+const path = require('path')
+
+require('dotenv').config({ path: path.resolve(__dirname + '/config/config.env') })
+
+console.log("\x1b[45mEnviroment File:\x1b[0m" + path.resolve(__dirname + '/config/config.env'))
+
+
+
+//!===================== Connect to DB =====================
+//console.log(process.env.dbNAME + "||" + process.env.PASSWORD + "||" + process.env.HOST + "||" + process.env.HOSTPORT + "||" + process.env.DB_USER);
+
+const db = mysql.createConnection(
+  {
+    host: process.env.HOST,
+    port: process.env.HOSTPORT,
+    user: process.env.DB_USER,
+    password: process.env.PASSWORD,
+    database: process.env.dbNAME
+  },
+  console.log(`Connected to the \x1b[43m${process.env.dbNAME}\x1b[0m database at \x1b[42m${process.env.HOST}:${process.env.HOSTPORT}\x1b[0m`)
+);
+
+
 
 //!===================== Variable Decleration =====================
-
-
 
 
 
@@ -27,6 +48,8 @@ const cTable = require('console.table');
 async function mainMenu() {
 
   await 1
+
+  // TODO: Move choices into an array 
 
   inquirer
     .prompt([
@@ -65,7 +88,7 @@ async function mainMenu() {
         case 'Exit':
           console.log(`\x1b[45m==================== Exit! ====================\x1b[0m`);
           console.log(`\x1b[45m=================== Goodbye! ==================\x1b[0m`);
-          return;
+          process.exit(1);
           break;
       }
 
@@ -78,51 +101,196 @@ async function mainMenu() {
 
 // ?============= viewDepartments =============
 function viewDepartments() {
-  console.log("viewDepartments");
+
+
+  db.query('SELECT * FROM department', function (err, results) {
+    console.log("\n\n\x1b[44m ====== Departments ======\x1b[0m");
+    console.table(results);
+  });
 
   mainMenu();
 };
 
 // ?============= viewRoles =============
 function viewRoles() {
-  console.log("viewRoles");
+
+  db.query('SELECT * FROM role', function (err, results) {
+    console.log("\n\n\x1b[44m ================== Roles ==================\x1b[0m");
+    console.table(results);
+  });
 
   mainMenu();
 };
 
 // ?============= viewEmployees =============
 function viewEmployees() {
-  console.log("viewEmployees");
+
+  db.query('SELECT * FROM employee', function (err, results) {
+    console.log("\n\n\x1b[44m ====== Employees ======\x1b[0m");
+    console.table(results);
+  });
 
   mainMenu();
 };
 
 // ?============= addDepartment =============
-function addDepartment() {
-  console.log("addDepartment");
+async function addDepartment() {
 
-  mainMenu();
+  inquirer
+    .prompt([
+      {
+        type: 'input',
+        name: 'newDepartment',
+        message: "Please input the new department name",
+      },
+    ])
+    .then(answers => {
+
+      let newDepartmentName = answers.newDepartment;
+
+      inquirer
+        .prompt([
+          {
+            type: 'input',
+            name: 'newID',
+            message: "Please input the new department ID",
+          },
+        ])
+        .then(answers => {
+          // console.log("\n\nCall API to create new department with the name " + newDepartmentName);
+          let sqlCall = `INSERT INTO department (id, name)\nVALUES ("${answers.newID}", "${newDepartmentName}");`;
+          console.log(sqlCall);
+
+          db.query(sqlCall, function (err, results) {
+
+            // console.log("\n\n\x1b[44m ====== Departments ======\x1b[0m");
+            // console.table(results);
+            // mainMenu();
+          });
+
+          // console.log("addDepartment");
+
+          mainMenu();
+
+
+        });
+    })
+
+
 };
 
 // ?============= addRole =============
-function addRole() {
-  console.log("addRole");
+async function addRole() {
 
-  mainMenu();
+  inquirer
+    .prompt([
+      {
+        type: 'input',
+        name: 'newRole',
+        message: "Please input the new role name",
+      },
+      {
+        type: 'input',
+        name: 'newRoleID',
+        message: "Please input the new Role ID",
+      },
+      {
+        type: 'input',
+        name: 'newSalary',
+        message: "Please input the roles salary",
+      },
+      {
+        type: 'input',
+        name: 'newDepartmentID',
+        message: "Please input department ID",
+        // TODO: Switch to list generated from exisiting departments 
+      },
+    ])
+    .then(answers => {
+
+      let newRoleTemp = answers.newRole;
+      let newRoleIDTemp = answers.newRoleID;
+      let newSalaryTemp = answers.newSalary;
+      let newDepartmentIDTemp = answers.newDepartmentID;
+
+      // console.log("\n\nCall API to create new department with the name " + newDepartmentName);
+      let sqlCall = `INSERT INTO role (id, title, salary,department_id)\nVALUES ("${newRoleIDTemp}", "${newRoleTemp}", "${newSalaryTemp}", "${newDepartmentIDTemp}");`;
+      console.log(sqlCall);
+
+      db.query(sqlCall, function (err, results) {
+
+      });
+
+      // console.log("addRole");
+
+      mainMenu();
+    });
+
+
 };
 
 
 // ?============= addEmployee =============
-function addEmployee() {
-  console.log("addEmployee");
+async function addEmployee() {
 
-  mainMenu();
+  inquirer
+    .prompt([
+      {
+        type: 'input',
+        name: 'newEmployeeID',
+        message: "Please input the new Employee ID",
+      },
+      {
+        type: 'input',
+        name: 'newFirstName',
+        message: "Please input First Name",
+      },
+      {
+        type: 'input',
+        name: 'newLastName',
+        message: "Please input Last name",
+      },
+      {
+        type: 'input',
+        name: 'newRoleID',
+        message: "Please Enter Employees Role ID",
+        // TODO: Switch to list generated from exisiting Role ID's
+      },
+      {
+        type: 'input',
+        name: 'newManagerID',
+        message: "Please input Manager ID",
+        // TODO: Switch to list generated from exisiting managers/empl
+      },
+    ])
+    .then(answers => {
+
+
+      let sqlCall = `INSERT INTO employee (id, first_name, last_name, role_id, manager_id)\nVALUES ("${answers.newEmployeeID}", "${answers.newFirstName}", "${answers.newLastName}", "${answers.newRoleID}", "${answers.newManagerID}");`;
+      console.log(sqlCall);
+
+      db.query(sqlCall, function (err, results) {
+
+      });
+
+      // console.log("addRole");
+
+      mainMenu();
+
+    })
 };
 
 
 // ?============= updateEmployeeRole =============
 function updateEmployeeRole() {
   console.log("updateEmployeeRole");
+
+
+
+
+
+
+
   mainMenu();
 };
 

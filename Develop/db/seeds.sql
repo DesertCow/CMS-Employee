@@ -16,9 +16,9 @@ VALUES ("20","Software Engr I","120000","1"),
   
 
 INSERT INTO employee (id, first_name, last_name, role_id, manager_id)
-VALUES ("678","Dave","Smith","20","346"),
-       ("436", "Mike","Bally","20","346"),
-       ("432", "Kelly","Weathers","21","56"),
-       ("899","Carl","Johnson","22","47");
+VALUES ("678","Dave","Smith","20",NULL),
+       ("436", "Mike","Bally","20","678"),
+       ("432", "Kelly","Weathers","21","678"),
+       ("899","Carl","Johnson","22","432");
 
        
