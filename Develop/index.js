@@ -155,26 +155,30 @@ async function addDepartment() {
           },
         ])
         .then(answers => {
-          console.log("\n\nCall API to create new department with the name " + newDepartmentName);
+          // console.log("\n\nCall API to create new department with the name " + newDepartmentName);
+          let sqlCall = `INSERT INTO department (id, name)\nVALUES ("${answers.newID}", "${newDepartmentName}");`;
+          console.log(sqlCall);
 
-          db.query(`INSERT INTO department (id, name)VALUES ("${answers.ID}", "${newDepartmentName}"),`, function (err, results) {
+          db.query(sqlCall, function (err, results) {
 
-            console.log("\n\n\x1b[44m ====== Employees ======\x1b[0m");
-            console.table(results);
-            mainMenu();
+            // console.log("\n\n\x1b[44m ====== Departments ======\x1b[0m");
+            // console.table(results);
+            // mainMenu();
           });
+
+          console.log("addDepartment");
+
+          mainMenu();
+
+
         });
     })
 
 
-
-  console.log("addDepartment");
-
-  mainMenu();
 };
 
 // ?============= addRole =============
-function addRole() {
+async function addRole() {
 
   inquirer
     .prompt([
@@ -183,20 +187,52 @@ function addRole() {
         name: 'newRole',
         message: "Please input the new role name",
       },
+      {
+        type: 'input',
+        name: 'newRoleID',
+        message: "Please input the new Role ID",
+      },
+      {
+        type: 'input',
+        name: 'newSalary',
+        message: "Please input the roles salary",
+      },
+      {
+        type: 'input',
+        name: 'newDepartmentID',
+        message: "Please input department ID",
+        // TODO: Switch to list generated from exisiting departments 
+      },
     ])
     .then(answers => {
 
-      console.log("\n\nCall API to create new role with the name " + answers.newRole);
+      let newRoleTemp = answers.newRole;
+      let newRoleIDTemp = answers.newRoleID;
+      let newSalaryTemp = answers.newSalary;
+      let newDepartmentIDTemp = answers.newDepartmentID;
 
-    })
-  console.log("addRole");
+      // console.log("\n\nCall API to create new department with the name " + newDepartmentName);
+      let sqlCall = `INSERT INTO role (id, title, salary,department_id)\nVALUES ("${newRoleIDTemp}", "${newRoleTemp}", "${newSalaryTemp}", "${newDepartmentIDTemp}");`;
+      console.log(sqlCall);
 
-  mainMenu();
+      // db.query(sqlCall, function (err, results) {
+
+      //   // console.log("\n\n\x1b[44m ====== Employees ======\x1b[0m");
+      //   // console.table(results);
+      //   mainMenu();
+      // });
+
+      console.log("addRole");
+
+      mainMenu();
+    });
+
+
 };
 
 
 // ?============= addEmployee =============
-function addEmployee() {
+async function addEmployee() {
 
   inquirer
     .prompt([
@@ -209,12 +245,10 @@ function addEmployee() {
     .then(answers => {
 
       console.log("\n\nCall API to create new Employee with the name " + answers.newEmployee);
+      mainMenu();
+      console.log("addEmployee");
 
     })
-
-  console.log("addEmployee");
-
-  mainMenu();
 };
 
 
