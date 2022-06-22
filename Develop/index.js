@@ -297,9 +297,8 @@ function viewDepartments() {
 
 // ?============= viewRoles =============
 function viewRoles() {
-
-  db.query('SELECT * FROM role', function (err, results) {
-    console.log("\n\n\x1b[44m ================== Roles ==================\x1b[0m");
+  db.query('SELECT role.title, role.id, department.name, role.salary\nFROM department\nINNER JOIN role ON department.id = role.department_id;', function (err, results) {
+    console.log("\n\n\x1b[44m ==================== Roles ===================\x1b[0m");
     console.table(results);
   });
 
@@ -310,7 +309,7 @@ function viewRoles() {
 function viewEmployees() {
 
   db.query('SELECT * FROM employee', function (err, results) {
-    console.log("\n\n\x1b[44m ====== Employees ======\x1b[0m");
+    console.log("\n\n\x1b[44m ================== Employees ==================\x1b[0m");
     console.table(results);
   });
 
@@ -362,18 +361,6 @@ async function addDepartment() {
 // ?============= addRole =============
 async function addRole() {
 
-
-  // for (let i = 1; i <= resultsLength; i++) {
-
-  //   console.log("[" + i + "]" + results[i].name);
-  //   departementID.push(results[i].name);
-
-  // }
-
-  // console.log("2Length = " + departementID.length)
-  // departementID = JSON.stringify(departementID);
-  // console.log(departementID)
-
   inquirer
     .prompt([
       {
@@ -412,12 +399,10 @@ async function addRole() {
             type: 'input',
             name: 'newDepartmentID',
             message: "Please input department ID",
-            // TODO: Switch to list generated from exisiting departments 
           },
         ])
         .then(answers => {
 
-          // console.log("\n\nCall API to create new department with the name " + newDepartmentName);
           let sqlCall = `INSERT INTO role (id, title, salary,department_id)\nVALUES ("${newRoleIDTemp}", "${newRoleTemp}", "${newSalaryTemp}", "${answers.newDepartmentID}");`;
           console.log(sqlCall);
 
@@ -519,8 +504,7 @@ async function addEmployee() {
 };
 
 // ?============= updateEmployeeRole =============
-async function updateEmployeeRole(employeeID, newRole) {
-  console.log("updateEmployeeRole");
+async function updateEmployeeRole() {
 
   inquirer
     .prompt([
@@ -567,12 +551,6 @@ async function removeDepartment() {
 
 
       let sqlCall = `UPDATE employee\nSET role_id = ${answers.removeDepartmentID}\nWHERE id = ${answers.employeeID}`;
-      console.log(sqlCall);
-
-      // db.query(sqlCall, function (err, results) {
-
-      // });
-
       removeMenu();
 
     })
