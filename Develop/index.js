@@ -166,7 +166,7 @@ async function addDepartment() {
             // mainMenu();
           });
 
-          console.log("addDepartment");
+          // console.log("addDepartment");
 
           mainMenu();
 
@@ -215,14 +215,11 @@ async function addRole() {
       let sqlCall = `INSERT INTO role (id, title, salary,department_id)\nVALUES ("${newRoleIDTemp}", "${newRoleTemp}", "${newSalaryTemp}", "${newDepartmentIDTemp}");`;
       console.log(sqlCall);
 
-      // db.query(sqlCall, function (err, results) {
+      db.query(sqlCall, function (err, results) {
 
-      //   // console.log("\n\n\x1b[44m ====== Employees ======\x1b[0m");
-      //   // console.table(results);
-      //   mainMenu();
-      // });
+      });
 
-      console.log("addRole");
+      // console.log("addRole");
 
       mainMenu();
     });
@@ -238,15 +235,45 @@ async function addEmployee() {
     .prompt([
       {
         type: 'input',
-        name: 'newEmployee',
-        message: "Please input the new Employee name",
+        name: 'newEmployeeID',
+        message: "Please input the new Employee ID",
+      },
+      {
+        type: 'input',
+        name: 'newFirstName',
+        message: "Please input First Name",
+      },
+      {
+        type: 'input',
+        name: 'newLastName',
+        message: "Please input Last name",
+      },
+      {
+        type: 'input',
+        name: 'newRoleID',
+        message: "Please Enter Employees Role ID",
+        // TODO: Switch to list generated from exisiting Role ID's
+      },
+      {
+        type: 'input',
+        name: 'newManagerID',
+        message: "Please input Manager ID",
+        // TODO: Switch to list generated from exisiting managers/empl
       },
     ])
     .then(answers => {
 
-      console.log("\n\nCall API to create new Employee with the name " + answers.newEmployee);
+
+      let sqlCall = `INSERT INTO employee (id, first_name, last_name, role_id, manager_id)\nVALUES ("${answers.newEmployeeID}", "${answers.newFirstName}", "${answers.newLastName}", "${answers.newRoleID}", "${answers.newManagerID}");`;
+      console.log(sqlCall);
+
+      db.query(sqlCall, function (err, results) {
+
+      });
+
+      // console.log("addRole");
+
       mainMenu();
-      console.log("addEmployee");
 
     })
 };
@@ -255,6 +282,13 @@ async function addEmployee() {
 // ?============= updateEmployeeRole =============
 function updateEmployeeRole() {
   console.log("updateEmployeeRole");
+
+
+
+
+
+
+
   mainMenu();
 };
 
