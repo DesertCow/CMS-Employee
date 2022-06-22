@@ -1,24 +1,26 @@
 
 USE CMSEmployee;
 
-INSERT INTO department (id, name)
-VALUES ("1", "Research"),
-       ("2", "Human Resources"),
-       ("3", "Marketing"),
-       ("4", "Information Technology");
+INSERT INTO department (name)
+VALUES ("Research"),
+       ("Human Resources"),
+       ("Marketing"),
+       ("Information Technology");
 
 
-INSERT INTO role (id, title, salary,department_id)
-VALUES ("20","Software Engr I","120000","1"),
-       ("21","Software Engr II","150000","1"),
-       ("22","Help Desk Tech","60000","2"),
-       ("23","Manager","130000","3");
+INSERT INTO role (title, salary,department_id)
+VALUES ("Software Engr I","120000","1"),
+       ("Software Engr II","150000","1"),
+       ("Help Desk Tech","60000","2"),
+       ("Manager","130000","3");
   
 
-INSERT INTO employee (id, first_name, last_name, role_id, manager_id)
-VALUES ("678","Dave","Smith","20",NULL),
-       ("436", "Mike","Bally","20","678"),
-       ("432", "Kelly","Weathers","21","678"),
-       ("899","Carl","Johnson","22","432");
+INSERT INTO employee (first_name, last_name, role_id, manager_id)
+VALUES ("Dave","Smith","1",NULL),
+       ("Mike","Bally","1",NULL),
+       ("Kelly","Weathers","2","1"),
+       ("Matt","Power","2","2"),
+       ("Eric","Moore","3","1"),
+       ("Carl","Johnson","2","3");
 
        
