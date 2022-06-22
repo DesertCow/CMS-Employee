@@ -56,6 +56,190 @@ async function mainMenu() {
       {
         type: 'list',
         name: 'mainMenuChoice',
+        choices: ['View (Departments/Roles/Employee(s)', 'Add (Department/Roles/Employee)', 'Update (Role/Promote)', 'Remove (Department/Roles/Employee)', 'Exit'],
+        message: "Please Select from the following options",
+      },
+    ])
+    .then(answers => {
+
+
+      switch (answers.mainMenuChoice) {
+        case 'View (Departments/Roles/Employee(s)':
+          viewMenu();
+          break;
+        case 'Add (Department/Roles/Employee)':
+          addMenu();
+          break;
+        case 'Update (Role/Promote)':
+          updateMenu();
+          break;
+        case 'Remove (Department/Roles/Employee)':
+          removeMenu();
+          break;
+        case 'Exit':
+          console.log(`\x1b[45m==================== Exit! ====================\x1b[0m`);
+          console.log(`\x1b[45m=================== Goodbye! ==================\x1b[0m`);
+          process.exit(1);
+          break;
+      }
+
+
+    })
+
+
+}
+
+// ?============= viewMenu =============
+
+async function viewMenu() {
+
+  inquirer
+    .prompt([
+      {
+        type: 'list',
+        name: 'viewMenuChoice',
+        choices: ['View All Departments', 'View All Roles', 'View All Employee(s)', 'Main Menu'],
+        message: "Please Select from the following options",
+      },
+    ])
+    .then(answers => {
+
+
+      switch (answers.viewMenuChoice) {
+        case 'View All Departments':
+          viewDepartments();
+          break;
+        case 'View All Roles':
+          viewRoles();
+          break;
+        case 'View All Employee(s)':
+          viewEmployees();
+          break;
+        case 'Main Menu':
+          mainMenu();
+          break;
+      }
+    })
+}
+
+// ?============= addMenu =============
+
+async function addMenu() {
+
+
+  inquirer
+    .prompt([
+      {
+        type: 'list',
+        name: 'addMenuChoice',
+        choices: ['Add A Department', 'Add A Role', 'Add An Employee', 'Main Menu'],
+        message: "Please Select from the following options",
+      },
+    ])
+    .then(answers => {
+
+
+      switch (answers.addMenuChoice) {
+        case 'Add A Department':
+          addDepartment();
+          break;
+        case 'Add A Role':
+          addRole();
+          break;
+        case 'Add An Employee':
+          addEmployee();
+          break;
+        case 'Main Menu':
+          mainMenu();
+          break;
+      }
+
+
+    })
+
+
+}
+
+// ?============= updateMenu =============
+
+async function updateMenu() {
+
+  inquirer
+    .prompt([
+      {
+        type: 'list',
+        name: 'updateMenuChoice',
+        choices: ['Update Employee Role', 'Main Menu'],
+        message: "Please Select from the following options",
+      },
+    ])
+    .then(answers => {
+
+
+      switch (answers.updateMenuChoice) {
+        case 'Update Employee Role':
+          updateEmployeeRole();
+          break;
+        case 'Main Menu':
+          mainMenu();
+          break;
+      }
+
+
+    })
+
+
+}
+
+// ?============= removeMenu =============
+
+async function removeMenu() {
+
+  inquirer
+    .prompt([
+      {
+        type: 'list',
+        name: 'mainMenuChoice',
+        choices: ['Remove Department', 'Remove Role', 'Remove Employee', 'Main Menu'],
+        message: "Please Select from the following options",
+      },
+    ])
+    .then(answers => {
+
+
+      switch (answers.mainMenuChoice) {
+        case 'Remove Department':
+          removeDepartment();
+          break;
+        case 'Remove Role':
+          removeRole();
+          break;
+        case 'Remove Employee':
+          removeEmployee();
+          break;
+        case 'Main Menu':
+          mainMenu();
+          break;
+      }
+
+
+    })
+
+}
+
+// ?============= mainMenu =============
+
+async function mainMenu2() {
+
+  await 1
+
+  // TODO: Move choices into an array 
+
+  inquirer
+    .prompt([
+      {
+        type: 'list',
+        name: 'mainMenuChoice',
         choices: ['View All Departments', 'View All Roles', 'View All Employee(s)', 'Add A Department', 'Add A Role', 'Add An Employee', 'Update Employee Role', 'Exit'],
         message: "Please Select from the following options",
       },
@@ -108,7 +292,7 @@ function viewDepartments() {
     console.table(results);
   });
 
-  mainMenu();
+  viewMenu();
 };
 
 // ?============= viewRoles =============
@@ -119,7 +303,7 @@ function viewRoles() {
     console.table(results);
   });
 
-  mainMenu();
+  viewMenu();
 };
 
 // ?============= viewEmployees =============
@@ -130,7 +314,7 @@ function viewEmployees() {
     console.table(results);
   });
 
-  mainMenu();
+  viewMenu();
 };
 
 // ?============= addDepartment =============
@@ -168,11 +352,7 @@ async function addDepartment() {
             // mainMenu();
           });
 
-          // console.log("addDepartment");
-
-          mainMenu();
-
-
+          addMenu();
         });
     })
 
@@ -223,7 +403,7 @@ async function addRole() {
 
       // console.log("addRole");
 
-      mainMenu();
+      addMenu();
     });
 
 
@@ -275,27 +455,84 @@ async function addEmployee() {
 
       // console.log("addRole");
 
-      mainMenu();
+      addMenu();
 
     })
 };
 
 
 // ?============= updateEmployeeRole =============
-function updateEmployeeRole() {
+async function updateEmployeeRole(employeeID, newRole) {
   console.log("updateEmployeeRole");
 
+  inquirer
+    .prompt([
+      {
+        type: 'input',
+        name: 'employeeID',
+        message: "Please input the Employee ID",
+      },
+      {
+        type: 'input',
+        name: 'newRoleID',
+        message: "Please input the NEW role ID",
+      },
+    ])
+    .then(answers => {
 
 
+      let sqlCall = `UPDATE employee\nSET role_id = ${answers.newRoleID}\nWHERE id = ${answers.employeeID}`;
+      console.log(sqlCall);
 
+      db.query(sqlCall, function (err, results) {
 
+      });
 
+      updateMenu();
 
-  mainMenu();
+    })
+
 };
 
 
-// ?============= addTeamMember =============
+// ?============= removeDepartment =============
+async function removeDepartment() {
+
+  inquirer
+    .prompt([
+      {
+        type: 'input',
+        name: 'removeDepartmentID',
+        message: "Please input the ID of the department you want to remove",
+      },
+    ])
+    .then(answers => {
+
+
+      let sqlCall = `UPDATE employee\nSET role_id = ${answers.removeDepartmentID}\nWHERE id = ${answers.employeeID}`;
+      console.log(sqlCall);
+
+      // db.query(sqlCall, function (err, results) {
+
+      // });
+
+      removeMenu();
+
+    })
+
+}
+
+// ?============= removeRole =============
+async function removeRole() {
+
+}
+
+// ?============= removeEmployee =============
+async function removeEmployee() {
+
+}
+
+
 
 // ?============= Init =============
 
@@ -319,6 +556,19 @@ function welcome() {
   console.log("|       ||       ||  _    ||       ||   ||  ||    ___||    __  |          ");
   console.log("| ||_|| ||   _   || | |   ||   _   ||   |_| ||   |___ |   |  | |          ");
   console.log("|_|   |_||__| |__||_|  |__||__| |__||_______||_______||___|  |_|          ");
+  // console.log(`  ______                 _                                      `);
+  // console.log(" |  ____|               | |                                     ");
+  // console.log(" | |__   _ __ ___  _ __ | | ___  _   _  ___  ___                ");
+  // console.log(' |  __| | '_` _  \| '_ \| |/ _ \| | | |/ _ \/ _ \               ');
+  // console.log(" | |____| | | | | | |_) | | (_) | |_| |  __/  __/               ");
+  // console.log(" |______|_| |_| |_| .__/|_|\___/ \__, |\___|\___|   ____   ___  ");
+  // console.log(" |  \/  |         | |             __/ |     \ \    / /_ | / _ \ ");
+  // console.log(" | \  / | __ _ _ _|_| __ _  __ _ |___/_ __   \ \  / / | || | | |");
+  // console.log(" | |\/| |/ _` | '_ \ / _` |/ _` |/ _ \ '__|   \ \/ /  | || | | | ");
+  // console.log(" | |  | | (_| | | | | (_| | (_| |  __/ |       \  /   | || |_| |");
+  // console.log(" |_|  |_|\__,_|_| |_|\__,_|\__, |\___|_|        \/    |_(_)___/ ");
+  // console.log("                            __/ |                               ");
+  // console.log("                           |___/                                ");
   console.log("\n\n")
 
 
