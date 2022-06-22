@@ -38,7 +38,7 @@ const db = mysql.createConnection(
 
 //!===================== Variable Decleration =====================
 
-
+let departementID = ["test1", "Test2"];
 
 
 //!=========================== Functions ==========================
@@ -227,60 +227,60 @@ async function removeMenu() {
 
 }
 
-// ?============= mainMenu =============
+// // ?============= mainMenu =============
 
-async function mainMenu2() {
+// async function mainMenu2() {
 
-  await 1
+//   await 1
 
-  // TODO: Move choices into an array 
+//   // TODO: Move choices into an array 
 
-  inquirer
-    .prompt([
-      {
-        type: 'list',
-        name: 'mainMenuChoice',
-        choices: ['View All Departments', 'View All Roles', 'View All Employee(s)', 'Add A Department', 'Add A Role', 'Add An Employee', 'Update Employee Role', 'Exit'],
-        message: "Please Select from the following options",
-      },
-    ])
-    .then(answers => {
-
-
-      switch (answers.mainMenuChoice) {
-        case 'View All Departments':
-          viewDepartments();
-          break;
-        case 'View All Roles':
-          viewRoles();
-          break;
-        case 'View All Employee(s)':
-          viewEmployees();
-          break;
-        case 'Add A Department':
-          addDepartment();
-          break;
-        case 'Add A Role':
-          addRole();
-          break;
-        case 'Add An Employee':
-          addEmployee();
-          break;
-        case 'Update Employee Role':
-          updateEmployeeRole();
-          break;
-        case 'Exit':
-          console.log(`\x1b[45m==================== Exit! ====================\x1b[0m`);
-          console.log(`\x1b[45m=================== Goodbye! ==================\x1b[0m`);
-          process.exit(1);
-          break;
-      }
+//   inquirer
+//     .prompt([
+//       {
+//         type: 'list',
+//         name: 'mainMenuChoice',
+//         choices: ['View All Departments', 'View All Roles', 'View All Employee(s)', 'Add A Department', 'Add A Role', 'Add An Employee', 'Update Employee Role', 'Exit'],
+//         message: "Please Select from the following options",
+//       },
+//     ])
+//     .then(answers => {
 
 
-    })
+//       switch (answers.mainMenuChoice) {
+//         case 'View All Departments':
+//           viewDepartments();
+//           break;
+//         case 'View All Roles':
+//           viewRoles();
+//           break;
+//         case 'View All Employee(s)':
+//           viewEmployees();
+//           break;
+//         case 'Add A Department':
+//           addDepartment();
+//           break;
+//         case 'Add A Role':
+//           addRole();
+//           break;
+//         case 'Add An Employee':
+//           addEmployee();
+//           break;
+//         case 'Update Employee Role':
+//           updateEmployeeRole();
+//           break;
+//         case 'Exit':
+//           console.log(`\x1b[45m==================== Exit! ====================\x1b[0m`);
+//           console.log(`\x1b[45m=================== Goodbye! ==================\x1b[0m`);
+//           process.exit(1);
+//           break;
+//       }
 
 
-}
+//     })
+
+
+// }
 
 
 // ?============= viewDepartments =============
@@ -362,49 +362,76 @@ async function addDepartment() {
 // ?============= addRole =============
 async function addRole() {
 
-  inquirer
-    .prompt([
-      {
-        type: 'input',
-        name: 'newRole',
-        message: "Please input the new role name",
-      },
-      {
-        type: 'input',
-        name: 'newRoleID',
-        message: "Please input the new Role ID",
-      },
-      {
-        type: 'input',
-        name: 'newSalary',
-        message: "Please input the roles salary",
-      },
-      {
-        type: 'input',
-        name: 'newDepartmentID',
-        message: "Please input department ID",
-        // TODO: Switch to list generated from exisiting departments 
-      },
-    ])
-    .then(answers => {
+  db.query('SELECT * FROM department', function (err, results) {
+    let departementID = results;
+    let resultsLength = departementID.length;
+    console.log(resultsLength);
 
-      let newRoleTemp = answers.newRole;
-      let newRoleIDTemp = answers.newRoleID;
-      let newSalaryTemp = answers.newSalary;
-      let newDepartmentIDTemp = answers.newDepartmentID;
+    for (let i = 1; i <= resultsLength; i++) {
 
-      // console.log("\n\nCall API to create new department with the name " + newDepartmentName);
-      let sqlCall = `INSERT INTO role (id, title, salary,department_id)\nVALUES ("${newRoleIDTemp}", "${newRoleTemp}", "${newSalaryTemp}", "${newDepartmentIDTemp}");`;
-      console.log(sqlCall);
+      console.log("[" + i + "]" + results[i].name);
+      departementID.push(results[i].name);
 
-      db.query(sqlCall, function (err, results) {
+    }
 
+    // console.log("2Length = " + departementID.length)
+    departementID = JSON.stringify(departementID);
+    console.log(departementID)
+
+    inquirer
+      .prompt([
+        {
+          type: 'input',
+          name: 'newRole',
+          message: "Please input the new role name",
+        },
+        {
+          type: 'input',
+          name: 'newRoleID',
+          message: "Please input the new Role ID",
+        },
+        {
+          type: 'input',
+          name: 'newSalary',
+          message: "Please input the roles salary",
+        },
+        // {
+        //   type: 'input',
+        //   name: 'newDepartmentID',
+        //   message: "Please input department ID",
+        //   // TODO: Switch to list generated from exisiting departments 
+        // },
+        {
+          type: 'rawlist',
+          name: "selectedDepartmentID",
+          choices: departementID,
+          message: "Please input department ID",
+          // TODO: Switch to list generated from exisiting departments 
+        },
+      ])
+      .then(answers => {
+
+        let newRoleTemp = answers.newRole;
+        let newRoleIDTemp = answers.newRoleID;
+        let newSalaryTemp = answers.newSalary;
+        let newDepartmentIDTemp = answers.newDepartmentID;
+
+        // console.log("\n\nCall API to create new department with the name " + newDepartmentName);
+        let sqlCall = `INSERT INTO role (id, title, salary,department_id)\nVALUES ("${newRoleIDTemp}", "${newRoleTemp}", "${newSalaryTemp}", "${newDepartmentIDTemp}");`;
+        console.log(sqlCall);
+
+        db.query(sqlCall, function (err, results) {
+
+        });
+
+        // console.log("addRole");
+
+        addMenu();
       });
 
-      // console.log("addRole");
+  });
 
-      addMenu();
-    });
+
 
 
 };
