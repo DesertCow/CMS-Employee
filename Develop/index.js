@@ -49,6 +49,8 @@ async function mainMenu() {
 
   await 1
 
+  // TODO: Move choices into an array 
+
   inquirer
     .prompt([
       {
