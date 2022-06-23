@@ -1,12 +1,15 @@
 //
 // Clayton Skaggs 6-22-22
 //
-// - npm install inquirer
-// - npm install jest
+// - npm i inquirer@8.2.4
+// - npm i mysql2
+// - npm i express
+// - npm i dotenv
+// - npm i console.table
 
 
-//? Import Modules
-// const fs = require('fs');
+//!===================== Variable Decleration / Import =====================
+
 var inquirer = require('inquirer');
 const express = require('express');
 const mysql = require('mysql2');
@@ -33,9 +36,6 @@ const db = mysql.createConnection(
   console.log(`Connected to the \x1b[42m${process.env.dbNAME}\x1b[0m database at \x1b[44m${process.env.HOST}:${process.env.HOSTPORT}\x1b[0m|`),
   console.log("============================================================\n\n")
 );
-
-//!===================== Variable Decleration =====================
-
 
 
 //!=========================== Menu Functions ==========================
@@ -244,7 +244,7 @@ async function addDepartment() {
     ])
     .then(answers => {
       let sqlCall = `INSERT INTO department (name)\nVALUES ("${answers.newDepartment}");`;
-      console.log(sqlCall);
+      // console.log(sqlCall);
 
       db.query(sqlCall, function (err, results) {
         addMenu();
@@ -290,7 +290,7 @@ async function addRole() {
         .then(answers => {
 
           let sqlCall = `INSERT INTO role (title, salary,department_id)\nVALUES ("${newRoleTemp}", "${newSalaryTemp}", "${answers.newDepartmentID}");`;
-          console.log(sqlCall);
+          // console.log(sqlCall);
 
           db.query(sqlCall, function (err, results) {
 
@@ -329,7 +329,7 @@ async function addEmployee() {
 
       db.query('SELECT * FROM employee', function (err, results) {
 
-        console.log("\n\n\x1b[44m =========== Employee ===========\x1b[0m");
+        console.log("\n\n\x1b[44m ================= Employee =================\x1b[0m");
         console.table(results);
       });
       inquirer
@@ -346,7 +346,7 @@ async function addEmployee() {
 
           db.query('SELECT * FROM role', function (err, results) {
 
-            console.log("\n\n\x1b[44m =========== Role(s) ===========\x1b[0m");
+            console.log("\n\n\x1b[44m ================= Role(s) =================\x1b[0m");
             console.table(results);
           });
           inquirer
@@ -362,7 +362,7 @@ async function addEmployee() {
 
 
               let sqlCall = `INSERT INTO employee (first_name, last_name, role_id, manager_id)\nVALUES ("${tempFirstName}", "${tempLastName}", "${answers.newRoleID}", "${tempManagerID}");`;
-              console.log(sqlCall);
+              // console.log(sqlCall);
 
               db.query(sqlCall, function (err, results) {
 
