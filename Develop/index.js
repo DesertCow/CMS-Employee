@@ -82,13 +82,13 @@ async function mainMenu() {
 // ?============= View Sub Menu =============
 
 async function viewMenu() {
-
+  console.log("\n");
   inquirer
     .prompt([
       {
         type: 'list',
         name: 'viewMenuChoice',
-        choices: ['View All Departments', 'View All Roles', 'View All Employee(s)', 'Main Menu'],
+        choices: ['View All Departments', 'View All Roles', 'View All Employee(s)', 'View All Employee(s) by Department', 'View Total Budget By Department', 'Main Menu'],
         message: "Please Select from the following options",
       },
     ])
@@ -103,6 +103,12 @@ async function viewMenu() {
         case 'View All Employee(s)':
           viewEmployees();
           break;
+        case 'View Total Budget By Department':
+          departmentBudget();
+          break;
+        case 'View All Employee(s) by Department':
+          viewEmployeesByDepartment();
+          break;
         case 'Main Menu':
           mainMenu();
           break;
@@ -113,7 +119,7 @@ async function viewMenu() {
 // ?============= Add Sub Menu =============
 
 async function addMenu() {
-
+  console.log("\n");
   inquirer
     .prompt([
       {
@@ -203,7 +209,7 @@ function viewDepartments() {
 
 
   db.query('SELECT * FROM department', function (err, results) {
-    console.log("\n\n\x1b[44m ====== Departments ======\x1b[0m");
+    console.log("\n\n\x1b[45m ====== Departments ===== \x1b[0m");
     console.table(results);
   });
 
@@ -213,7 +219,7 @@ function viewDepartments() {
 // ?============= viewRoles =============
 function viewRoles() {
   db.query('SELECT role.title, role.id, department.name, role.salary\nFROM department\nINNER JOIN role ON department.id = role.department_id;', function (err, results) {
-    console.log("\n\n\x1b[44m ==================== Roles ===================\x1b[0m");
+    console.log("\n\n\x1b[42m ================== Roles ================== \x1b[0m");
     console.table(results);
   });
 
@@ -224,16 +230,39 @@ function viewRoles() {
 function viewEmployees() {
 
   db.query('SELECT * FROM employee', function (err, results) {
-    console.log("\n\n\x1b[44m ================== Employees ==================\x1b[0m");
+    console.log("\n\n\x1b[43m ============================================== Employees ============================================= \x1b[0m");
     console.table(results);
   });
 
   viewMenu();
 };
 
+// ?============= viewEmployeesByDepartment =============
+function viewEmployeesByDepartment() {
+
+  db.query('SELECT *\nFROM role\nJOIN department ON (department.id = role.department_id)\nJOIN employee ON (employee.role_id = department.id)', function (err, results) {
+    console.log("\n\n\x1b[43m ============================================== Employees ============================================= \x1b[0m");
+    console.table(results);
+  });
+
+  viewMenu();
+};
+
+// ?============= departmentBudget =============
+async function departmentBudget() {
+  console.log("\n");
+  let sqlCall = `SELECT SUM(salary) AS 'Department Total', title\nFROM role\nGROUP BY title`;
+  // console.log(sqlCall)
+  db.query(sqlCall, function (err, results) {
+    console.log("\n\n\x1b[45m ====== Departments Budget ====== \x1b[0m");
+    console.table(results);
+    viewMenu();
+  })
+}
+
 // ?============= addDepartment =============
 async function addDepartment() {
-
+  console.log("\n");
   inquirer
     .prompt([
       {
@@ -254,7 +283,7 @@ async function addDepartment() {
 
 // ?============= addRole =============
 async function addRole() {
-
+  console.log("\n");
   inquirer
     .prompt([
       {
@@ -304,7 +333,7 @@ async function addRole() {
 
 // ?============= addEmployee =============
 async function addEmployee() {
-
+  console.log("\n");
   let tempFirstName = '';
   let tempLastName = '';
   let tempManagerID = '';
@@ -377,7 +406,7 @@ async function addEmployee() {
 
 // ?============= updateEmployeeRole =============
 async function updateEmployeeRole() {
-
+  console.log("\n");
   inquirer
     .prompt([
       {
@@ -395,7 +424,7 @@ async function updateEmployeeRole() {
 
 
       let sqlCall = `UPDATE employee\nSET role_id = ${answers.newRoleID}\nWHERE id = ${answers.employeeID}`;
-      console.log(sqlCall);
+      // console.log(sqlCall);
 
       db.query(sqlCall, function (err, results) {
 
@@ -410,7 +439,7 @@ async function updateEmployeeRole() {
 
 // ?============= removeDepartment =============
 async function removeDepartment() {
-
+  console.log("\n");
   inquirer
     .prompt([
       {
@@ -435,11 +464,51 @@ async function removeDepartment() {
 
 // ?============= removeRole =============
 async function removeRole() {
+  console.log("\n");
+  inquirer
+    .prompt([
+      {
+        type: 'input',
+        name: 'removeRoleID',
+        message: "Please input the ID of the Role you want to remove",
+      },
+    ])
+    .then(answers => {
+
+      // UPDATE employee\nSET role_id = ${ answers.removeDepartmentID } \nWHERE id = ${ answers.employeeID }
+      let sqlCall = `DELETE FROM role WHERE role.id=${answers.removeRoleID}`;
+      // console.log(sqlCall)
+
+      db.query(sqlCall, function (err, results) {
+        removeMenu();
+      })
+
+    })
 
 }
 
 // ?============= removeEmployee =============
 async function removeEmployee() {
+  console.log("\n");
+  inquirer
+    .prompt([
+      {
+        type: 'input',
+        name: 'removeEmployeeID',
+        message: "Please input the ID of the Employee you want to remove",
+      },
+    ])
+    .then(answers => {
+
+      // UPDATE employee\nSET role_id = ${ answers.removeDepartmentID } \nWHERE id = ${ answers.employeeID }
+      let sqlCall = `DELETE FROM employee WHERE employee.id=${answers.removeEmployeeID}`;
+      // console.log(sqlCall)
+
+      db.query(sqlCall, function (err, results) {
+        removeMenu();
+      })
+
+    })
 
 }
 
