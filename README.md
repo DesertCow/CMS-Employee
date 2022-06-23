@@ -58,7 +58,7 @@ node index.js
 <b>WHEN</b> I choose to view all roles<br>
 ✔️ THEN I am presented with the job title, role id, the department that role belongs to, and the salary for that role<br>
 <b>WHEN</b> I choose to view all employees<br>
-❌ THEN I am presented with a formatted table showing employee data, including employee ids, first names, last names, job titles, departments, salaries, and managers that the employees report to<br>
+✔️ THEN I am presented with a formatted table showing employee data, including employee ids, first names, last names, job titles, departments, salaries, and managers that the employees report to<br>
 <b>WHEN</b> I choose to add a department<br>
 ✔️ THEN I am prompted to enter the name of the department and that department is added to the database<br>
 <b>WHEN</b> I choose to add a role<br>
@@ -67,6 +67,10 @@ node index.js
 ✔️ THEN I am prompted to enter the employee’s first name, last name, role, and manager, and that employee is added to the database<br>
 <b>WHEN</b> I choose to update an employee role<br>
 ✔️ THEN I am prompted to select an employee to update and their new role and this information is updated in the database<br>
+<b>WHEN</b> I choose to delete a Department, Employee, or Role<br>
+✔️ THEN I am prompted to define the ID number of the row to be deleted, THEN that row is deleted<br>
+<b>WHEN</b> I choose "View Total Budget By Department"<br>
+✔️ THEN the total budget of each department is displayed<br>
 <br>
 <br>
 <br>

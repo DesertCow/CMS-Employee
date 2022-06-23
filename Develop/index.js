@@ -88,7 +88,7 @@ async function viewMenu() {
       {
         type: 'list',
         name: 'viewMenuChoice',
-        choices: ['View All Departments', 'View All Roles', 'View All Employee(s) by Department', 'View Total Budget By Department', 'Main Menu'],
+        choices: ['View All Departments', 'View All Roles', 'View All Employee(s)', 'View All Employee(s) by Department', 'View Total Budget By Department', 'Main Menu'],
         message: "Please Select from the following options",
       },
     ])
@@ -100,11 +100,14 @@ async function viewMenu() {
         case 'View All Roles':
           viewRoles();
           break;
-        case 'View All Employee(s) by Department':
+        case 'View All Employee(s)':
           viewEmployees();
           break;
         case 'View Total Budget By Department':
           departmentBudget();
+          break;
+        case 'View All Employee(s) by Department':
+          viewEmployeesByDepartment();
           break;
         case 'Main Menu':
           mainMenu();
@@ -225,6 +228,17 @@ function viewRoles() {
 
 // ?============= viewEmployees =============
 function viewEmployees() {
+
+  db.query('SELECT * FROM employee', function (err, results) {
+    console.log("\n\n\x1b[43m ============================================== Employees ============================================= \x1b[0m");
+    console.table(results);
+  });
+
+  viewMenu();
+};
+
+// ?============= viewEmployeesByDepartment =============
+function viewEmployeesByDepartment() {
 
   db.query('SELECT *\nFROM role\nJOIN department ON (department.id = role.department_id)\nJOIN employee ON (employee.role_id = department.id)', function (err, results) {
     console.log("\n\n\x1b[43m ============================================== Employees ============================================= \x1b[0m");
