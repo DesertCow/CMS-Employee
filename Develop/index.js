@@ -1,12 +1,15 @@
 //
 // Clayton Skaggs 6-22-22
 //
-// - npm install inquirer
-// - npm install jest
+// - npm i inquirer@8.2.4
+// - npm i mysql2
+// - npm i express
+// - npm i dotenv
+// - npm i console.table
 
 
-//? Import Modules
-// const fs = require('fs');
+//!===================== Variable Decleration / Import =====================
+
 var inquirer = require('inquirer');
 const express = require('express');
 const mysql = require('mysql2');
@@ -16,12 +19,10 @@ const path = require('path')
 
 require('dotenv').config({ path: path.resolve(__dirname + '/config/config.env') })
 
-console.log("\x1b[45mEnviroment File:\x1b[0m" + path.resolve(__dirname + '/config/config.env'))
-
-
+// console.log("\x1b[45mEnviroment File:\x1b[0m" + path.resolve(__dirname + '/config/config.env'))
 
 //!===================== Connect to DB =====================
-//console.log(process.env.dbNAME + "||" + process.env.PASSWORD + "||" + process.env.HOST + "||" + process.env.HOSTPORT + "||" + process.env.DB_USER);
+
 
 const db = mysql.createConnection(
   {
@@ -31,17 +32,13 @@ const db = mysql.createConnection(
     password: process.env.PASSWORD,
     database: process.env.dbNAME
   },
-  console.log(`Connected to the \x1b[43m${process.env.dbNAME}\x1b[0m database at \x1b[42m${process.env.HOST}:${process.env.HOSTPORT}\x1b[0m`)
+  console.log("\n============================================================"),
+  console.log(`Connected to the \x1b[42m${process.env.dbNAME}\x1b[0m database at \x1b[44m${process.env.HOST}:${process.env.HOSTPORT}\x1b[0m|`),
+  console.log("============================================================\n\n")
 );
 
 
-
-//!===================== Variable Decleration =====================
-
-
-
-
-//!=========================== Functions ==========================
+//!=========================== Menu Functions ==========================
 
 // ?============= mainMenu =============
 
@@ -49,14 +46,12 @@ async function mainMenu() {
 
   await 1
 
-  // TODO: Move choices into an array 
-
   inquirer
     .prompt([
       {
         type: 'list',
         name: 'mainMenuChoice',
-        choices: ['View All Departments', 'View All Roles', 'View All Employee(s)', 'Add A Department', 'Add A Role', 'Add An Employee', 'Update Employee Role', 'Exit'],
+        choices: ['View (Departments/Roles/Employee(s)', 'Add (Department/Roles/Employee)', 'Update (Role/Promote)', 'Remove (Department/Roles/Employee)', '\x1b[41mExit\x1b[0m'],
         message: "Please Select from the following options",
       },
     ])
@@ -64,6 +59,41 @@ async function mainMenu() {
 
 
       switch (answers.mainMenuChoice) {
+        case 'View (Departments/Roles/Employee(s)':
+          viewMenu();
+          break;
+        case 'Add (Department/Roles/Employee)':
+          addMenu();
+          break;
+        case 'Update (Role/Promote)':
+          updateMenu();
+          break;
+        case 'Remove (Department/Roles/Employee)':
+          removeMenu();
+          break;
+        case '\x1b[41mExit\x1b[0m':
+          console.log(`\x1b[41m==================== Exit! ====================\x1b[0m`);
+          process.exit(1);
+          break;
+      }
+    })
+}
+
+// ?============= View Sub Menu =============
+
+async function viewMenu() {
+
+  inquirer
+    .prompt([
+      {
+        type: 'list',
+        name: 'viewMenuChoice',
+        choices: ['View All Departments', 'View All Roles', 'View All Employee(s)', 'Main Menu'],
+        message: "Please Select from the following options",
+      },
+    ])
+    .then(answers => {
+      switch (answers.viewMenuChoice) {
         case 'View All Departments':
           viewDepartments();
           break;
@@ -73,6 +103,28 @@ async function mainMenu() {
         case 'View All Employee(s)':
           viewEmployees();
           break;
+        case 'Main Menu':
+          mainMenu();
+          break;
+      }
+    })
+}
+
+// ?============= Add Sub Menu =============
+
+async function addMenu() {
+
+  inquirer
+    .prompt([
+      {
+        type: 'list',
+        name: 'addMenuChoice',
+        choices: ['Add A Department', 'Add A Role', 'Add An Employee', 'Main Menu'],
+        message: "Please Select from the following options",
+      },
+    ])
+    .then(answers => {
+      switch (answers.addMenuChoice) {
         case 'Add A Department':
           addDepartment();
           break;
@@ -82,23 +134,70 @@ async function mainMenu() {
         case 'Add An Employee':
           addEmployee();
           break;
+        case 'Main Menu':
+          mainMenu();
+          break;
+      }
+    })
+}
+
+// ?============= Update Sub Menu =============
+
+async function updateMenu() {
+
+  inquirer
+    .prompt([
+      {
+        type: 'list',
+        name: 'updateMenuChoice',
+        choices: ['Update Employee Role', 'Main Menu'],
+        message: "Please Select from the following options",
+      },
+    ])
+    .then(answers => {
+      switch (answers.updateMenuChoice) {
         case 'Update Employee Role':
           updateEmployeeRole();
           break;
-        case 'Exit':
-          console.log(`\x1b[45m==================== Exit! ====================\x1b[0m`);
-          console.log(`\x1b[45m=================== Goodbye! ==================\x1b[0m`);
-          process.exit(1);
+        case 'Main Menu':
+          mainMenu();
           break;
       }
-
-
     })
-
-
 }
 
+// ?============= Remove Sub Menu =============
 
+async function removeMenu() {
+
+  inquirer
+    .prompt([
+      {
+        type: 'list',
+        name: 'mainMenuChoice',
+        choices: ['Remove Department', 'Remove Role', 'Remove Employee', 'Main Menu'],
+        message: "Please Select from the following options",
+      },
+    ])
+    .then(answers => {
+      switch (answers.mainMenuChoice) {
+        case 'Remove Department':
+          removeDepartment();
+          break;
+        case 'Remove Role':
+          removeRole();
+          break;
+        case 'Remove Employee':
+          removeEmployee();
+          break;
+        case 'Main Menu':
+          mainMenu();
+          break;
+      }
+    })
+}
+
+//!=========================== Functions ==========================
 // ?============= viewDepartments =============
 function viewDepartments() {
 
@@ -108,29 +207,28 @@ function viewDepartments() {
     console.table(results);
   });
 
-  mainMenu();
+  viewMenu();
 };
 
 // ?============= viewRoles =============
 function viewRoles() {
-
-  db.query('SELECT * FROM role', function (err, results) {
-    console.log("\n\n\x1b[44m ================== Roles ==================\x1b[0m");
+  db.query('SELECT role.title, role.id, department.name, role.salary\nFROM department\nINNER JOIN role ON department.id = role.department_id;', function (err, results) {
+    console.log("\n\n\x1b[44m ==================== Roles ===================\x1b[0m");
     console.table(results);
   });
 
-  mainMenu();
+  viewMenu();
 };
 
 // ?============= viewEmployees =============
 function viewEmployees() {
 
   db.query('SELECT * FROM employee', function (err, results) {
-    console.log("\n\n\x1b[44m ====== Employees ======\x1b[0m");
+    console.log("\n\n\x1b[44m ================== Employees ==================\x1b[0m");
     console.table(results);
   });
 
-  mainMenu();
+  viewMenu();
 };
 
 // ?============= addDepartment =============
@@ -145,38 +243,13 @@ async function addDepartment() {
       },
     ])
     .then(answers => {
+      let sqlCall = `INSERT INTO department (name)\nVALUES ("${answers.newDepartment}");`;
+      // console.log(sqlCall);
 
-      let newDepartmentName = answers.newDepartment;
-
-      inquirer
-        .prompt([
-          {
-            type: 'input',
-            name: 'newID',
-            message: "Please input the new department ID",
-          },
-        ])
-        .then(answers => {
-          // console.log("\n\nCall API to create new department with the name " + newDepartmentName);
-          let sqlCall = `INSERT INTO department (id, name)\nVALUES ("${answers.newID}", "${newDepartmentName}");`;
-          console.log(sqlCall);
-
-          db.query(sqlCall, function (err, results) {
-
-            // console.log("\n\n\x1b[44m ====== Departments ======\x1b[0m");
-            // console.table(results);
-            // mainMenu();
-          });
-
-          // console.log("addDepartment");
-
-          mainMenu();
-
-
-        });
-    })
-
-
+      db.query(sqlCall, function (err, results) {
+        addMenu();
+      });
+    });
 };
 
 // ?============= addRole =============
@@ -191,55 +264,53 @@ async function addRole() {
       },
       {
         type: 'input',
-        name: 'newRoleID',
-        message: "Please input the new Role ID",
-      },
-      {
-        type: 'input',
         name: 'newSalary',
         message: "Please input the roles salary",
-      },
-      {
-        type: 'input',
-        name: 'newDepartmentID',
-        message: "Please input department ID",
-        // TODO: Switch to list generated from exisiting departments 
       },
     ])
     .then(answers => {
 
       let newRoleTemp = answers.newRole;
-      let newRoleIDTemp = answers.newRoleID;
       let newSalaryTemp = answers.newSalary;
-      let newDepartmentIDTemp = answers.newDepartmentID;
 
-      // console.log("\n\nCall API to create new department with the name " + newDepartmentName);
-      let sqlCall = `INSERT INTO role (id, title, salary,department_id)\nVALUES ("${newRoleIDTemp}", "${newRoleTemp}", "${newSalaryTemp}", "${newDepartmentIDTemp}");`;
-      console.log(sqlCall);
+      db.query('SELECT * FROM department', function (err, results) {
 
-      db.query(sqlCall, function (err, results) {
+        console.log("\n\n\x1b[44m ====== Departments ======\x1b[0m");
+        console.table(results);
+      })
 
-      });
+      inquirer
+        .prompt([
+          {
+            type: 'input',
+            name: 'newDepartmentID',
+            message: "Please input department ID",
+          },
+        ])
+        .then(answers => {
 
-      // console.log("addRole");
+          let sqlCall = `INSERT INTO role (title, salary,department_id)\nVALUES ("${newRoleTemp}", "${newSalaryTemp}", "${answers.newDepartmentID}");`;
+          // console.log(sqlCall);
 
-      mainMenu();
+          db.query(sqlCall, function (err, results) {
+
+            addMenu();
+
+          });
+        });
     });
-
-
 };
 
 
 // ?============= addEmployee =============
 async function addEmployee() {
 
+  let tempFirstName = '';
+  let tempLastName = '';
+  let tempManagerID = '';
+
   inquirer
     .prompt([
-      {
-        type: 'input',
-        name: 'newEmployeeID',
-        message: "Please input the new Employee ID",
-      },
       {
         type: 'input',
         name: 'newFirstName',
@@ -250,56 +321,134 @@ async function addEmployee() {
         name: 'newLastName',
         message: "Please input Last name",
       },
+    ])
+    .then(answers => {
+
+      tempFirstName = answers.newFirstName;
+      tempLastName = answers.newLastName;
+
+      db.query('SELECT * FROM employee', function (err, results) {
+
+        console.log("\n\n\x1b[44m ================= Employee =================\x1b[0m");
+        console.table(results);
+      });
+      inquirer
+        .prompt([
+          {
+            type: 'input',
+            name: 'newManagerID',
+            message: "Please input Manager ID",
+          },
+        ])
+        .then(answers => {
+
+          tempManagerID = answers.newManagerID;
+
+          db.query('SELECT * FROM role', function (err, results) {
+
+            console.log("\n\n\x1b[44m ================= Role(s) =================\x1b[0m");
+            console.table(results);
+          });
+          inquirer
+            .prompt([
+              {
+                type: 'input',
+                name: 'newRoleID',
+                message: "Please Enter Employees Role ID",
+                // TODO: Switch to list generated from exisiting Role ID's
+              },
+            ])
+            .then(answers => {
+
+
+              let sqlCall = `INSERT INTO employee (first_name, last_name, role_id, manager_id)\nVALUES ("${tempFirstName}", "${tempLastName}", "${answers.newRoleID}", "${tempManagerID}");`;
+              // console.log(sqlCall);
+
+              db.query(sqlCall, function (err, results) {
+
+              })
+
+              addMenu();
+
+            })
+        })
+    });
+};
+
+// ?============= updateEmployeeRole =============
+async function updateEmployeeRole() {
+
+  inquirer
+    .prompt([
       {
         type: 'input',
-        name: 'newRoleID',
-        message: "Please Enter Employees Role ID",
-        // TODO: Switch to list generated from exisiting Role ID's
+        name: 'employeeID',
+        message: "Please input the Employee ID",
       },
       {
         type: 'input',
-        name: 'newManagerID',
-        message: "Please input Manager ID",
-        // TODO: Switch to list generated from exisiting managers/empl
+        name: 'newRoleID',
+        message: "Please input the NEW role ID",
       },
     ])
     .then(answers => {
 
 
-      let sqlCall = `INSERT INTO employee (id, first_name, last_name, role_id, manager_id)\nVALUES ("${answers.newEmployeeID}", "${answers.newFirstName}", "${answers.newLastName}", "${answers.newRoleID}", "${answers.newManagerID}");`;
+      let sqlCall = `UPDATE employee\nSET role_id = ${answers.newRoleID}\nWHERE id = ${answers.employeeID}`;
       console.log(sqlCall);
 
       db.query(sqlCall, function (err, results) {
 
-      });
+      })
 
-      // console.log("addRole");
+      updateMenu();
 
-      mainMenu();
+    });
+
+};
+
+
+// ?============= removeDepartment =============
+async function removeDepartment() {
+
+  inquirer
+    .prompt([
+      {
+        type: 'input',
+        name: 'removeDepartmentID',
+        message: "Please input the ID of the department you want to remove",
+      },
+    ])
+    .then(answers => {
+
+      // UPDATE employee\nSET role_id = ${ answers.removeDepartmentID } \nWHERE id = ${ answers.employeeID }
+      let sqlCall = `DELETE FROM department WHERE department.id=${answers.removeDepartmentID}`;
+      console.log(sqlCall)
+
+      db.query(sqlCall, function (err, results) {
+        removeMenu();
+      })
 
     })
-};
 
+}
 
-// ?============= updateEmployeeRole =============
-function updateEmployeeRole() {
-  console.log("updateEmployeeRole");
+// ?============= removeRole =============
+async function removeRole() {
 
+}
 
+// ?============= removeEmployee =============
+async function removeEmployee() {
 
+}
 
-
-
-
-  mainMenu();
-};
-
-
-// ?============= addTeamMember =============
 
 // ?============= Init =============
 
 function init() {
+
+  welcome();
 
 }
 
@@ -332,7 +481,6 @@ init();
 
 //*============== Main ==============
 
-welcome();
 mainMenu();
 
 //*=========== END of MAIN ==========
