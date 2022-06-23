@@ -80,13 +80,7 @@ node index.js
 ---
 <h4>Demo Video I</h4><br>
 
-[![Demo Video Screen Shot](https://img.youtube.com/vi/##NUMBER/0.jpg)](https://www.youtube.com/watch?v=##NUMBER)
-
-<br>
-<br>
-<h4>Demo Video II</h4><br>
-
-[![Demo Video Screen Shot](https://img.youtube.com/vi/##NUMBER/0.jpg)](https://www.youtube.com/watch?v=##NUMBER)
+[![Demo Video Screen Shot](https://img.youtube.com/vi/cvXNx60yOF4/0.jpg)](https://www.youtube.com/watch?v=cvXNx60yOF4)
 
 <br>
 <br>
