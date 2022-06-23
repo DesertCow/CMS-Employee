@@ -78,7 +78,7 @@ node index.js
 <h3 align="center">⚡ ⚡ App Demo ⚡ ⚡</h3>
 
 ---
-<h4>Demo Video I</h4><br>
+<h4>Demo Video</h4><br>
 
 [![Demo Video Screen Shot](https://img.youtube.com/vi/cvXNx60yOF4/0.jpg)](https://www.youtube.com/watch?v=cvXNx60yOF4)
 
