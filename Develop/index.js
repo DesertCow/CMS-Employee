@@ -230,7 +230,7 @@ function viewRoles() {
 function viewEmployees() {
 
   db.query('SELECT * FROM employee', function (err, results) {
-    console.log("\n\n\x1b[43m ============================================== Employees ============================================= \x1b[0m");
+    console.log("\n\n\x1b[43m ======================= Employees ======================== \x1b[0m");
     console.table(results);
   });
 
@@ -302,34 +302,43 @@ async function addRole() {
       let newRoleTemp = answers.newRole;
       let newSalaryTemp = answers.newSalary;
 
+      let menuNameList = [];
+      let menuIdList = []
+
       db.query('SELECT * FROM department', function (err, results) {
 
-        console.log("\n\n\x1b[44m ====== Departments ======\x1b[0m");
-        console.table(results);
-      })
+        for (let i = 0; i < results.length; i++) {
 
-      inquirer
-        .prompt([
-          {
-            type: 'input',
-            name: 'newDepartmentID',
-            message: "Please input department ID",
-          },
-        ])
-        .then(answers => {
+          menuNameList[i] = results[i].name;
+          menuIdList[i] = results[i].id;
+        }
+        console.log("\n");
+        inquirer
+          .prompt([
+            {
+              type: 'rawlist',
+              name: 'newDepartmentID',
+              choices: menuNameList,
+              message: "Please select department",
+            },
+          ])
+          .then(answers => {
 
-          let sqlCall = `INSERT INTO role (title, salary,department_id)\nVALUES ("${newRoleTemp}", "${newSalaryTemp}", "${answers.newDepartmentID}");`;
-          // console.log(sqlCall);
+            let userDepartmentSelection = menuIdList[menuNameList.indexOf(answers.newDepartmentID)];
+            userDepartmentSelection - 1;
 
-          db.query(sqlCall, function (err, results) {
+            let sqlCall = `INSERT INTO role (title, salary,department_id)\nVALUES ("${newRoleTemp}", "${newSalaryTemp}", "${userDepartmentSelection}");`;
+            console.log(sqlCall);
 
-            addMenu();
+            db.query(sqlCall, function (err, results) {
 
+              addMenu();
+
+            });
           });
-        });
+      })
     });
 };
-
 
 // ?============= addEmployee =============
 async function addEmployee() {
